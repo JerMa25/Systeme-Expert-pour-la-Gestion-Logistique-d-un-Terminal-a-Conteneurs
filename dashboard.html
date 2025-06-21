@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tableau de Bord Portuaire</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --primary: #25aceb;
+            --primary-dark: #1e62af;
+            --secondary: #3aa5ed;
+            --primary-light: #3b82f6;
+            
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --light: #ffffff;
+            --gray: #f1f5f9;
+            --dark: #1e293b;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            background-color: var(--gray);
+            color: var(--dark);
+        }
+
+        .card {
+            background: var(--light);
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+            border: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .stat-card {
+            border-left: 4px solid var(--primary);
+        }
+
+        .stat-card:nth-child(2) {
+            border-left-color: var(--success);
+        }
+
+        .stat-card:nth-child(3) {
+            border-left-color: var(--warning);
+        }
+
+        .stat-card:nth-child(4) {
+            border-left-color: var(--secondary);
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            outline: none;
+            border: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px rgba(37, 99, 235, 0.3);
+        }
+
+        .text-primary {
+            color: var(--primary);
+        }
+
+        .text-success {
+            color: var(--success);
+        }
+
+        .text-warning {
+            color: var(--warning);
+        }
+
+        .text-secondary {
+            color: var(--secondary);
+        }
+
+        .bg-primary-light {
+            background-color: rgba(59, 130, 246, 0.1);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.6s ease-in;
+        }
+
+        /* Navigation styles */
+        .header-nav {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            padding: 0.5rem 2rem;
+        }
+        
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        
+        .nav-logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+        }
+        
+        .nav-menu {
+            display: flex;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            gap: 0.5rem;
+        }
+        
+        .nav-link {
+            color: white;
+            text-decoration: none;
+            padding: 0.75rem 1rem;
+            border-radius: 6px;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.95rem;
+        }
+        
+        .nav-link:hover {
+            background: rgba(255, 255, 255, 0.15);
+        }
+        
+        .nav-link.active {
+            background: white;
+            color: var(--primary);
+            font-weight: 600;
+        }
+        
+        @media (max-width: 768px) {
+            .nav-container {
+                flex-direction: column;
+                padding: 0.5rem;
+            }
+            
+            .nav-menu {
+                width: 100%;
+                flex-direction: column;
+                margin-top: 0.5rem;
+            }
+            
+            .nav-link {
+                justify-content: center;
+                padding: 0.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="min-h-screen">
+        <!-- Header avec navigation intégrée -->
+        <header class="header-nav shadow-md">
+            <div class="nav-container">
+                <a href="#" class="nav-logo">
+                    <i class="fas fa-ship text-xl"></i>
+                    <span>PortExpert</span>
+                </a>
+                
+                <nav>
+                    <ul class="nav-menu">
+                        <li>
+                            <a href="index.html" class="nav-link active">
+                                <i class="fas fa-home"></i>
+                                <span>Accueil</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="dashboard.html" class="nav-link">
+                                <i class="fas fa-chart-line"></i>
+                                <span>Dashboard</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="details.html" class="nav-link">
+                                <i class="fas fa-cog"></i>
+                                <span>details</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#" class="nav-link">
+                                <i class="fas fa-sign-out-alt"></i>
+                                <span>Déconnexion</span>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="max-w-7xl mx-auto px-4 py-6 sm:px-6 lg:px-8">
+            <!-- Stats Cards -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                <div class="card stat-card p-6 fade-in" style="animation-delay: 0.1s">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <p class="text-sm font-medium text-gray-500">Navires au Port</p>
+                            <h3 class="text-3xl font-bold text-primary mt-1" id="total-ships">3</h3>
+                            <p class="text-xs text-gray-500 mt-1">2 en opération</p>
+                        </div>
+                        <div class="bg-primary-light p-3 rounded-lg">
+                            <i class="fas fa-ship text-primary text-xl"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card stat-card p-6 fade-in" style="animation-delay: 0.2s">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <p class="text-sm font-medium text-gray-500">Conteneurs Traités</p>
+                            <h3 class="text-3xl font-bold text-success mt-1" id="processed-containers">1,245</h3>
+                            <p class="text-xs text-gray-500 mt-1">+24 aujourd'hui</p>
+                        </div>
+                        <div class="bg-green-50 p-3 rounded-lg">
+                            <i class="fas fa-box text-success text-xl"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card stat-card p-6 fade-in" style="animation-delay: 0.3s">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <p class="text-sm font-medium text-gray-500">En Attente Douane</p>
+                            <h3 class="text-3xl font-bold text-warning mt-1" id="pending-customs">23</h3>
+                            <p class="text-xs text-gray-500 mt-1">5 nécessitent inspection</p>
+                        </div>
+                        <div class="bg-yellow-50 p-3 rounded-lg">
+                            <i class="fas fa-file-alt text-warning text-xl"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card stat-card p-6 fade-in" style="animation-delay: 0.4s">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <p class="text-sm font-medium text-gray-500">Camions Aujourd'hui</p>
+                            <h3 class="text-3xl font-bold text-secondary mt-1" id="trucks-today">87</h3>
+                            <p class="text-xs text-gray-500 mt-1">12 en attente</p>
+                        </div>
+                        <div class="bg-purple-50 p-3 rounded-lg">
+                            <i class="fas fa-truck text-secondary text-xl"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Charts -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <div class="card p-6 fade-in" style="animation-delay: 0.5s">
+                    <h3 class="text-lg font-semibold text-gray-800 mb-4">Activité des Quais</h3>
+                    <canvas id="berth-activity-chart" height="250"></canvas>
+                </div>
+
+                <div class="card p-6 fade-in" style="animation-delay: 0.6s">
+                    <h3 class="text-lg font-semibold text-gray-800 mb-4">Types de Conteneurs</h3>
+                    <canvas id="container-type-chart" height="250"></canvas>
+                </div>
+            </div>
+
+            <!-- Recent Activity -->
+            <div class="card p-6 mt-6 fade-in" style="animation-delay: 0.7s">
+                <h3 class="text-lg font-semibold text-gray-800 mb-4">Activité Récente</h3>
+                <div class="overflow-x-auto">
+                    <table class="min-w-full divide-y divide-gray-200">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Événement</th>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Module</th>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Heure</th>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Statut</th>
+                            </tr>
+                        </thead>
+                        <tbody class="bg-white divide-y divide-gray-200">
+                            <tr>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">Arrivée du MSC Oscar</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Planification</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">10:45</td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Terminé</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">Déchargement conteneurs</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Opérations</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">11:30</td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">En cours</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">Inspection douanière</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Douane</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">12:15</td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">En attente</span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Initialiser les graphiques
+        function initCharts() {
+            // Activité des quais
+            const berthCtx = document.getElementById('berth-activity-chart').getContext('2d');
+            new Chart(berthCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi', 'Dimanche'],
+                    datasets: [{
+                        label: 'Navires accostés',
+                        data: [3, 5, 4, 6, 7, 3, 2],
+                        backgroundColor: '#3b82f6',
+                        borderColor: '#2563eb',
+                        borderWidth: 1
+                    }, {
+                        label: 'Conteneurs traités (x100)',
+                        data: [12, 18, 15, 22, 25, 10, 8],
+                        backgroundColor: '#10b981',
+                        borderColor: '#059669',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: {
+                                drawBorder: false
+                            }
+                        },
+                        x: {
+                            grid: {
+                                display: false
+                            }
+                        }
+                    }
+                }
+            });
+            
+            // Types de conteneurs
+            const typeCtx = document.getElementById('container-type-chart').getContext('2d');
+            new Chart(typeCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Standard', 'Réfrigéré', 'Ouvert', 'Citerne', 'Plat'],
+                    datasets: [{
+                        data: [45, 15, 20, 10, 10],
+                        backgroundColor: [
+                            '#3b82f6',
+                            '#10b981',
+                            '#f59e0b',
+                            '#8b5cf6',
+                            '#ef4444'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'right',
+                        }
+                    },
+                    cutout: '70%'
+                }
+            });
+        }
+
+        // Mettre à jour la date/heure
+        function updateDateTime() {
+            const now = new Date();
+            const options = { 
+                weekday: 'long', 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            };
+            document.getElementById('last-update').textContent = now.toLocaleDateString('fr-FR', options);
+        }
+
+        // Initialisation
+        document.addEventListener('DOMContentLoaded', function() {
+            initCharts();
+            updateDateTime();
+            
+            // Simuler une mise à jour des données toutes les 5 secondes
+            setInterval(() => {
+                // Mettre à jour les chiffres aléatoirement
+                document.getElementById('processed-containers').textContent = 
+                    (1245 + Math.floor(Math.random() * 10)).toLocaleString();
+                document.getElementById('trucks-today').textContent = 
+                    87 + Math.floor(Math.random() * 3);
+                
+                updateDateTime();
+            }, 5000);
+        });
+    </script>
+</body>
+</html>

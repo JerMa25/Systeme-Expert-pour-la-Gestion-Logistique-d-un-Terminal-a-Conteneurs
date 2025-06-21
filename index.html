@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulation d'un Port Maritime</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class ="entete">
+                <div class="logo">
+                    <i class="fas fa-ship"></i>
+                    <h1>PortExpert</h1>
+                </div>
+                <nav>
+                    <ul>
+                        <li><a href="acceuil.html" class="active"><i class="fas fa-home"></i> Home</a></li>
+                        <li><a href="dashboard.html"><i class="fas fa-chart-line"></i> Dashboard</a></li>
+                        <li><a href="details.html"><i class="fas fa-cog"></i> details</a></li>
+                        <li><a href="#"><i class="fas fa-question-circle"></i> Aide</a></li>
+                    </ul>
+                </nav>
+    </div>
+    <div class="container">
+
+        <header>
+            <h1> Gestion d'un Port maritime avec un systeme expert </h1>
+            <div class="port-status">
+                <span class="status-item">Navires dans le port: <span id="ships-count">0</span></span>
+                <span class="status-item">Quais disponibles: <span id="available-docks">4</span></span>
+                <span class="status-item">Operations en cours: <span id="active-operations">0</span></span>
+            </div>
+        </header>
+
+        <div class="main-content">
+            <div class="port-view">
+                <h2>Vue du Port</h2>
+                <div class="port-container">
+                    <div class="docks-area">
+                        <div class="dock" id="dock-1" data-dock="1">
+                            <div class="dock-header">Quai 1</div>
+                            <div class="dock-status">Libre</div>
+                            <div class="ship-slot"></div>
+                        </div>
+                        <div class="dock" id="dock-2" data-dock="2">
+                            <div class="dock-header">Quai 2</div>
+                            <div class="dock-status">Libre</div>
+                            <div class="ship-slot"></div>
+                        </div>
+                        <div class="dock" id="dock-3" data-dock="3">
+                            <div class="dock-header">Quai 3</div>
+                            <div class="dock-status">Libre</div>
+                            <div class="ship-slot"></div>
+                        </div>
+                        <div class="dock" id="dock-4" data-dock="4">
+                            <div class="dock-header">Quai 4</div>
+                            <div class="dock-status">Libre</div>
+                            <div class="ship-slot"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="sea-area">
+                        <h3>Zone Maritime</h3>
+                        <div class="waiting-ships" id="waiting-ships">
+                            <!-- Les navires en attente apparaîtront ici -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="control-panel">
+                <h2>Panneau de Contrôle</h2>
+                
+                <div class="ship-generation">
+                    <h3>Génération de Navires</h3>
+                    <div class="form-group">
+                        <label for="ship-name">Nom du navire:</label>
+                        <input type="text" id="ship-name" placeholder="Ex: Cargo Express">
+                    </div>
+                    <div class="form-group">
+                        <label for="ship-type">Type de navire:</label>
+                        <select id="ship-type">
+                            <option value="cargo">Cargo</option>
+                            <option value="tanker">Pétrolier</option>
+                            <option value="container">Porte-conteneurs</option>
+                            <option value="passenger">Passagers</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="cargo-amount">Quantité de marchandises (tonnes):</label>
+                        <input type="number" id="cargo-amount" min="10" max="5000" value="1000">
+                    </div>
+                    <button id="generate-ship" class="btn btn-primary">Générer Navire</button>
+                    <button id="auto-generate" class="btn btn-secondary">Mode Automatique</button>
+                </div>
+
+                <div class="operations">
+                    <h3>Opérations Rapides</h3>
+                    <button id="dock-next-ship" class="btn btn-success">Accoster Prochain Navire</button>
+                    <button id="unload-all" class="btn btn-warning">Décharger Tous</button>
+                    <button id="emergency-evacuation" class="btn btn-danger">Évacuation d'Urgence</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="logs-section">
+            <h2>Journal des Opérations</h2>
+            <div class="logs" id="operation-logs">
+                <p class="log-entry system">Système de port initialisé - Tous les quais disponibles</p>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
